@@ -40,6 +40,9 @@ class Logger:
         self.CLR = CLR
     
     def log(self, message: str) -> None:
+        if not self.DEBUG:
+            return
+
         now: datetime.datetime = datetime.datetime.now()
 
         print(f"({CLR.YELLOW}{now.date()} {now.hour}:{now.minute}:{now.second}{CLR.RESET}) {CLR.GREEN}{self.LOGGER_NAME}{CLR.RESET} {CLR.NORMAL}{message}{CLR.RESET}")

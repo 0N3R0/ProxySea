@@ -1,5 +1,5 @@
-from ..imports import bs4, lxml
 from ..util import ProxyProvider, ProxyInfo, MiniJS
+from ..imports import bs4, lxml, typing
 
 class SpysOneScrapper:
     def __init__(self, _html: str) -> None:
@@ -8,9 +8,9 @@ class SpysOneScrapper:
         self.MiniJS = MiniJS()
 
         self.ANONYMITY_LEVELS: dict[str] = {
-            "hia": "high",
-            "anm": "mid",
-            "noa": "low"
+            "hia": "HIGH",
+            "anm": "MEDIUM",
+            "noa": "LOW"
         }
 
     def find_obfuscated_script(self) -> bs4.PageElement | None:
@@ -49,7 +49,7 @@ class SpysOneScrapper:
 
             proxy_list.append(
                 ProxyInfo(
-                    _type = None,
+                    _scheme = None,
                     _host = ip,
                     _port = port,
                     _anonymity_level = self.ANONYMITY_LEVELS[anonymity]
@@ -60,13 +60,15 @@ class SpysOneScrapper:
 
 
 class SpysOne(ProxyProvider):
-    def __init__(self) -> None:
+    def __init__(self, _debug: bool = False) -> None:
+        self.DEBUG = _debug
+
         super().__init__(
             _provider_url = "https://spys.one/en/",
-            _debug = True
+            _debug = self.DEBUG
         )
 
-    async def setup(self) -> None:
+    async def fetch_proxies(self) -> None:
         HTML = await self.download_page()
 
         if not HTML:
@@ -80,4 +82,3 @@ class SpysOne(ProxyProvider):
 
         for proxy in proxies:
             await self.add_new_proxy(_new_proxy = proxy)
-            # await self.add_to_new_proxies(new_proxy = proxy)

@@ -1,15 +1,14 @@
-from ..util import ProxyInfo
-from ..util import ProxyProvider
-from ..imports import bs4, lxml
+from ..util import ProxyInfo, ProxyProvider
+from ..imports import bs4, lxml, typing
 
 class FreeProxyListScrapper:
     def __init__(self, _html: str) -> None:
         self.HTML = bs4.BeautifulSoup(_html, "lxml")
         
         self.ANONYMITY_LEVELS: dict[str] = {
-            "elite proxy": "high",
-            "anonymous": "mid",
-            "transparent": "low"
+            "elite proxy": "HIGH",
+            "anonymous": "MEDIUM",
+            "transparent": "LOW"
         }
 
     def scrape_proxies(self) -> list[str]:
@@ -32,7 +31,7 @@ class FreeProxyListScrapper:
 
             proxies.append(
                 ProxyInfo(
-                    _type = None,
+                    _scheme = None,
                     _host = host,
                     _port = port,
                     _anonymity_level = self.ANONYMITY_LEVELS[anonymity]
@@ -43,13 +42,15 @@ class FreeProxyListScrapper:
 
 
 class FreeProxyList(ProxyProvider):
-    def __init__(self) -> None:
+    def __init__(self, _debug = False) -> None:
+        self.DEBUG = _debug
+
         super().__init__(
             _provider_url = "https://free-proxy-list.net/",
-            _debug = True
+            _debug = self.DEBUG
         )
 
-    async def setup(self) -> None:
+    async def fetch_proxies(self) -> None:
         HTML = await self.download_page()
 
         if not HTML:
@@ -63,4 +64,3 @@ class FreeProxyList(ProxyProvider):
 
         for proxy in proxies:
             await self.add_new_proxy(_new_proxy = proxy)
-            # await self.add_to_new_proxies(new_proxy = proxy)

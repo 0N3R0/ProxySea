@@ -26,10 +26,9 @@ class ProxyProvider:
         # Proxies variables
         self.PROXIES: list[ProxyInfo] = []
 
-
         # Create the Logger instance, for easier logging.
         self.Logger: Logger = Logger(
-            _logger_name = f"ProviderManager [{self.DOMAIN}]",
+            _logger_name = f"ProxyProvider [{self.DOMAIN}]",
             _debug = self.DEBUG
         )
 
@@ -62,20 +61,20 @@ class ProxyProvider:
             self.Logger.log(f"This proxy is blacklisted: {_proxy}")
             return
 
-        # Check if provided proxy has defined valid proxy_type
-        if not _proxy.TYPE or _proxy.TYPE not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
-            # If the proxy doesn't have provided type of proxy, or is not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]
+        # Check if provided proxy has defined valid proxy_scheme
+        if not _proxy.SCHEME or _proxy.SCHEME not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
+            # If the proxy doesn't have provided scheme of proxy, or is not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]
 
-            # We are trying to detect the type of the proxy
-            proxy_host, proxy_port, proxy_type = await self.ProxyTester.detect_type(
+            # We are trying to detect the scheme of the proxy
+            proxy_host, proxy_port, proxy_scheme = await self.ProxyTester.detect_scheme(
                 _host = _proxy.HOST,
                 _port = _proxy.PORT
             )
 
-            # Checking if we got the proxy_type
-            if proxy_type:
-                # If we got the proxy_type, we are setting it and changing the active state of proxy to True
-                _proxy.change_proxy_type(_type = proxy_type)
+            # Checking if we got the proxy_scheme
+            if proxy_scheme:
+                # If we got the proxy_scheme, we are setting it and changing the active state of proxy to True
+                _proxy.change_proxy_scheme(_scheme = proxy_scheme)
                 _proxy.change_is_active(_active = True)
 
             else:
@@ -83,10 +82,10 @@ class ProxyProvider:
                 _proxy.change_is_active(_active = False)
 
         else:
-            # If the proxy_type was provided, we are just checking the connection for provided proxy_type
+            # If the proxy_scheme was provided, we are just checking the connection for provided proxy_scheme
 
             is_alive = await self.ProxyTester.check_connection(
-                _scheme = _proxy.TYPE,
+                _scheme = _proxy.SCHEME,
                 _host = _proxy.HOST,
                 _port = _proxy.PORT
             )

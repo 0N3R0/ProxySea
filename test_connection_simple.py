@@ -2,7 +2,7 @@ import requests
 
 
 
-host_port: str = "82.102.10.253:80"
+host_port: str = "219.65.73.81:80"
 
 prot_1: str = "http"
 prot_2: str = "https"

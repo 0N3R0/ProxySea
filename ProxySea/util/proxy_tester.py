@@ -4,11 +4,11 @@ from .aio import AIOBase
 from ..imports import typing, asyncio, time, ssl, random
 
 class ProxyInfo:
-    def __init__(self, _type: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4", None], _host: str, _port: int, _anonymity_level: typing.Literal["high", "mid", "low"]) -> None:
-        self.TYPE: str = _type
+    def __init__(self, _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4", None], _host: str, _port: int, _anonymity_level: typing.Literal["HIGH", "MEDIUM", "LOW"]) -> None:
+        self.SCHEME: str = _scheme.upper() if _scheme else _scheme
         self.HOST: str = _host
         self.PORT: str = int(_port) if _port else _port
-        self.PROXY_ANONYMITY_LEVEL: str = _anonymity_level
+        self.ANONYMITY_LEVEL: str = _anonymity_level.upper() if _anonymity_level else _anonymity_level
 
         self.IS_ACTIVE: bool = False
         self.CONNECTION_RETRIES: int = 0
@@ -24,14 +24,14 @@ class ProxyInfo:
         return self.CONNECTION_RETRIES > self.BLACKLIST_AFTER
 
 
-    def change_proxy_type(self, _type: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]) -> None:
-        if not _type:
-            raise ValueError(f"[ProxyInfo (change_proxy_type)] You have to provide _type. {self.ID=} || {_type=}")
+    def change_proxy_scheme(self, _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]) -> None:
+        if not _scheme:
+            raise ValueError(f"[ProxyInfo (change_proxy_scheme)] You have to provide _scheme. {self.ID=} || {_scheme=}")
         
-        if _type not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
-            raise ValueError(f"[ProxyInfo (change_proxy_type)] Your provided _type should be one of them ['HTTPS', 'HTTP', 'SOCKS5', 'SOCKS4']. {self.ID=} || {_type=}")
+        if _scheme not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
+            raise ValueError(f"[ProxyInfo (change_proxy_scheme)] Your provided _scheme should be one of them ['HTTPS', 'HTTP', 'SOCKS5', 'SOCKS4']. {self.ID=} || {_scheme=}")
 
-        self.TYPE = _type
+        self.SCHEME = _scheme
 
     def change_is_active(self, _active: bool) -> None:
         if not isinstance(_active, bool):
@@ -51,10 +51,10 @@ class ProxyInfo:
 
 
     def __str__(self) -> str:
-        return f"({self.PROXY_ANONYMITY_LEVEL=} | {self.IS_ACTIVE=} | {self.IS_BLACKLISTED=} | {self.CONNECTION_RETRIES=}) {self.TYPE}://{self.HOST}:{self.PORT}"
+        return f"({self.ANONYMITY_LEVEL=} | {self.IS_ACTIVE=} | {self.IS_BLACKLISTED=} | {self.CONNECTION_RETRIES=}) {self.SCHEME}://{self.HOST}:{self.PORT}"
 
 
-class ProxyTypeDetector:
+class ProxySchemeDetector:
     def __init__(
             self,
             _connection_timeout: int = 3,
@@ -66,17 +66,17 @@ class ProxyTypeDetector:
         self.CONNECTION_TIMEOUT: int = _connection_timeout
 
         # Basic informations
-        self.PROXY_TYPES: list[str] = ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]
+        self.PROXY_SCHEMES: list[str] = ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]
 
 
         # Create the logger instance
         self.Logger: Logger = Logger(
-            _logger_name = "ProxyType",
+            _logger_name = "ProxyScheme",
             _debug = self.DEBUG
         )
 
 
-    # Detect whether the type of proxy is SOCKS4
+    # Detect whether the scheme of proxy is SOCKS4
     async def is_socks4(self, _host: str, _port: int, _delay_before_request: float = 0.5) -> bool:
         is_alive: bool = False
 
@@ -115,7 +115,7 @@ class ProxyTypeDetector:
         return is_alive
 
 
-    # Detect whether the type of proxy is SOCKS5
+    # Detect whether the scheme of proxy is SOCKS5
     async def is_socks5(self, _host: str, _port: int, _delay_before_request: float = 0.9) -> bool:
         is_alive: bool = False
 
@@ -146,7 +146,7 @@ class ProxyTypeDetector:
         return is_alive
 
 
-    # Detect whether the type of proxy is HTTP
+    # Detect whether the scheme of proxy is HTTP
     async def is_http(self, _host: str, _port: int, _delay_before_request: float = 1.4) -> bool:
         is_alive: bool = False
 
@@ -193,7 +193,7 @@ class ProxyTypeDetector:
         return is_alive
 
 
-    # Detect whether the type of proxy is HTTPS
+    # Detect whether the scheme of proxy is HTTPS
     async def is_https(self, _host: str, _port: int, _delay_before_request: float = 1.9) -> bool:
         is_alive: bool = False
 
@@ -222,8 +222,8 @@ class ProxyTypeDetector:
         return is_alive
 
 
-    # Detect proxy type in parallel
-    async def detect_proxy_type_parallel(self, _host: str, _port: int) -> str:
+    # Detect proxy scheme in parallel
+    async def detect_proxy_scheme_parallel(self, _host: str, _port: int) -> str:
         aio = AIOBase(_semaphore = 4)
         # aio = AIOBase(_semapphore = 4)
 
@@ -235,15 +235,15 @@ class ProxyTypeDetector:
 
         results = await aio.run_tasks()
     
-        for result, proxy_type in zip(results, self.PROXY_TYPES):
-            self.Logger.log(f"{result}, {proxy_type}")
+        for result, proxy_scheme in zip(results, self.PROXY_SCHEMES):
+            self.Logger.log(f"{result}, {proxy_scheme}")
 
             if not result:
                 continue
 
-            self.Logger.log(f"({_host}:{_port}) is type of {proxy_type} proxy.")
+            self.Logger.log(f"({_host}:{_port}) is scheme of {proxy_scheme} proxy.")
 
-            return proxy_type
+            return proxy_scheme
 
 
 # Proxy tester class, used for testing a proxy.
@@ -259,8 +259,8 @@ class ProxyTester:
         self.CONNECTION_TIMEOUT: int = _connection_timeout
 
 
-        # Create the ProxyTypeDetector instance, for detecting the proxy type
-        self.ProxyTypeDetector: ProxyTypeDetector = ProxyTypeDetector(
+        # Create the ProxySchemeDetector instance, for detecting the proxy scheme
+        self.ProxySchemeDetector: ProxySchemeDetector = ProxySchemeDetector(
             _connection_timeout = self.CONNECTION_TIMEOUT, # _connection_timeout is set by forwarding the parameter from ProxyTester
             _debug = self.DEBUG
         )
@@ -272,6 +272,8 @@ class ProxyTester:
         )
 
     async def check_connection(self, _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"], _host: str, _port: int) -> bool:
+        _scheme = _scheme.upper()
+
         """
         This method is used to test if the proxy is available.
 
@@ -289,28 +291,28 @@ class ProxyTester:
         result: bool | None = None
 
         if _scheme == "HTTPS":
-            result = await self.ProxyTypeDetector.is_https(
+            result = await self.ProxySchemeDetector.is_https(
                 _host = _host,
                 _port = _port,
                 _delay_before_request = 0.0
             )
 
         if _scheme == "HTTP":
-            result = await self.ProxyTypeDetector.is_http(
+            result = await self.ProxySchemeDetector.is_http(
                 _host = _host,
                 _port = _port,
                 _delay_before_request = 0.0
             )
 
         if _scheme == "SOCKS5":
-            result = await self.ProxyTypeDetector.is_socks5(
+            result = await self.ProxySchemeDetector.is_socks5(
                 _host = _host,
                 _port = _port,
                 _delay_before_request = 0.0
             )
 
         if _scheme == "SOCKS4":
-            result = await self.ProxyTypeDetector.is_socks4(
+            result = await self.ProxySchemeDetector.is_socks4(
                 _host = _host,
                 _port = _port,
                 _delay_before_request = 0.0
@@ -321,27 +323,27 @@ class ProxyTester:
         return bool(result)
 
 
-    async def detect_type(self, _host: str, _port: int) -> tuple[str, int, str | None]:
+    async def detect_scheme(self, _host: str, _port: int) -> tuple[str, int, str | None]:
         """
         This method returns tuple[pos1, pos2, pos3]:
             Position 1: HOST (Providen _host)
             Position 2: PORT (Providen _port)
-            Position 3: TYPE (Detected type of proxy ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"] or None if connection couldn't be established)
+            Position 3: SCHEME (Detected scheme of proxy ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"] or None if connection couldn't be established)
 
             Example:
-                host, port, scheme = detect_type(...)
+                host, port, scheme = detect_scheme(...)
         """
         start: float = time.perf_counter()
 
-        proxy_type = await self.ProxyTypeDetector.detect_proxy_type_parallel(_host = _host, _port = _port)
+        proxy_scheme = await self.ProxySchemeDetector.detect_proxy_scheme_parallel(_host = _host, _port = _port)
 
-        if not proxy_type:
+        if not proxy_scheme:
             self.Logger.log(
-                f"Testing proxy connection {self.Logger.CLR.RED}failed{self.Logger.CLR.RESET} ({proxy_type}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."
+                f"Testing proxy connection {self.Logger.CLR.RED}failed{self.Logger.CLR.RESET} ({proxy_scheme}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."
             )
         else:
             self.Logger.log(
-                f"Testing proxy connection {self.Logger.CLR.GREEN}succeeded{self.Logger.CLR.RESET} ({proxy_type}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."
+                f"Testing proxy connection {self.Logger.CLR.GREEN}succeeded{self.Logger.CLR.RESET} ({proxy_scheme}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."
             )
 
-        return _host, _port, proxy_type
+        return _host, _port, proxy_scheme

@@ -21,6 +21,8 @@ class AIOBase:
 
         return task
 
+    def clear_tasks(self) -> None:
+        self.TASKS = []
 
     async def run_tasks(self) -> list[any]:
         return await asyncio.gather(*self.TASKS)
