@@ -9,8 +9,12 @@ while True:
     if response == "break":
         break
 
-    proxy_details: list[str] = response.split("://")[1].split(":")
+    scheme, host_port = response.split("://")
+    scheme = scheme.split(") ")[-1].lower()
+    host, port = host_port.split(":")
 
-    proxies.append((proxy_details[0], int(proxy_details[1])))
+    proxies.append((scheme, host, port))
 
 print(proxies)
+
+[print(f"{proxy[1]}:{proxy[2]}") for proxy in proxies]

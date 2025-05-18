@@ -22,47 +22,56 @@ def save_to_file(data: str | list[str], _file_path: str, _mode: Literal["append"
 async def main() -> None:
     PM: ProvidersManager = ProvidersManager(_debug = True)
 
-    start = time.perf_counter()
+    # start = time.perf_counter()
 
-    await PM.setup()
+    fetched_proxies = await PM.fetch_proxies()
+    [print(proxy, len(fetched_proxies)) for proxy in fetched_proxies]
 
-    all_proxies: list = []
+    tested_proxies = await PM.test_fetched_proxies()
+    [print(proxy, len(tested_proxies)) for proxy in tested_proxies]
 
-    for provider in PM.ProxyProviders:
-        for proxy in provider.PROXIES:
-            all_proxies.append(proxy)
-            print(f"{provider.DOMAIN} > {proxy}")
+    active_proxies: list = await PM.get_proxies(_active = True)
+    [print(proxy, len(active_proxies)) for proxy in active_proxies]
 
-    print(f"Checked ({len(all_proxies)}) proxies in {(time.perf_counter() - start):.2f}")
+    # all_proxies: list = []
 
-    save_to_file(f"\n\n\n{str(datetime.datetime.now()).split('.')[0]} (proxies flagged as working: {len([prx for prx in all_proxies if prx.IS_ACTIVE])})\n\n", _file_path = "swp.txt")
-    save_to_file([f"{prx}\n" for prx in all_proxies if prx.IS_ACTIVE], _file_path = "swp.txt")
+    # for provider in PM.ProxyProviders:
+    #     for proxy in provider.PROXIES:
+    #         all_proxies.append(proxy)
+    #         print(f"{provider.DOMAIN} > {proxy}")
 
-    while True:
-        res = input("Provide command: ")
+    # print(f"Checked ({len(all_proxies)}) proxies in {(time.perf_counter() - start):.2f}")
 
-        if res == "get_proxies":
-            _active: bool = bool(input("Do you wanna active proxies? y/n: ") == "y")
-            _proxy_scheme: str = input("Provide proxy scheme ['HTTPS', 'HTTP', 'SOCKS5', 'SOCKS4', 'ALL']: ")
-            _anonymity_level: str = input("Provide anonymity level ['HIGH', 'MEDIUM', 'LOW', 'ALL']: ")
+    # save_to_file(f"\n\n\n{str(datetime.datetime.now()).split('.')[0]} (proxies flagged as working: {len([prx for prx in all_proxies if prx.IS_ACTIVE])})\n\n", _file_path = "swp.txt")
+    # save_to_file([f"{prx}\n" for prx in all_proxies if prx.IS_ACTIVE], _file_path = "swp.txt")
 
-            proxies = await PM.get_proxies(
-                _active = _active,
-                _scheme = _proxy_scheme,
-                _anonymity_level = _anonymity_level
-            )
+    # while True:
+    #     res = input("Provide command: ")
 
-            for proxy in proxies:
-                print(proxy)
+    #     if res == "get_proxies":
+    #         _active: bool = bool(input("Do you wanna active proxies? y/n: ") == "y")
+    #         _proxy_scheme: str = input("Provide proxy scheme ['HTTPS', 'HTTP', 'SOCKS5', 'SOCKS4', 'ALL']: ")
+    #         _anonymity_level: str = input("Provide anonymity level ['HIGH', 'MEDIUM', 'LOW', 'ALL']: ")
+
+    #         proxies = await PM.get_proxies(
+    #             _active = _active,
+    #             _scheme = _proxy_scheme,
+    #             _anonymity_level = _anonymity_level
+    #         )
+
+    #         for proxy in proxies:
+    #             print(proxy)
 
 
     # Testing provider one by one
     # fpl = FreeProxyList()
-    # fpl = SpysOne()
+    # fpl = SpysOne(_debug = False)
 
-    # await fpl.fetch_proxies(_proxy_anonymity_level = "high")
+    # await fpl.fetch_proxies()
 
-    # await fpl.test_all_proxies(500)
+    # res = await fpl.test_all_proxies(500)
+    # for proxy in res:
+    #     print(proxy)
 
     # save_to_file(f"\n\n\n{str(datetime.datetime.now()).split('.')[0]} (proxies flagged as working: {len([prx for prx in fpl.PROXIES if prx.IS_ACTIVE])})\n\n", _file_path = "swp.txt")
     # save_to_file([f"{proxy}\n" for proxy in fpl.PROXIES if proxy.IS_ACTIVE], _file_path = "swp.txt")

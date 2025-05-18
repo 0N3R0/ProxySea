@@ -15,7 +15,10 @@ class ProvidersManager:
                 _debug = self.DEBUG
             )
         ]
-    
+
+        self.ALL_PROXIES: list[ProxyInfo] = []
+
+
     async def get_proxies(
             self,
             _active: bool = True,
@@ -27,42 +30,67 @@ class ProvidersManager:
 
         proxies: list[ProxyInfo] = []
 
-        for provider in self.ProxyProviders: # Iterate for every provider
-            
-            # Iterate for every proxy in provider
-            for proxy in provider.PROXIES:
-                if _scheme not in [proxy.SCHEME, "ALL"]:
-                    continue
+        for proxy in self.ALL_PROXIES:
+            if _scheme not in [proxy.SCHEME, "ALL"]:
+                continue
 
-                if _anonymity_level not in [proxy.ANONYMITY_LEVEL, "ALL"]:
-                    continue
+            if _anonymity_level not in [proxy.ANONYMITY_LEVEL, "ALL"]:
+                continue
 
-                if _active != proxy.IS_ACTIVE:
-                    continue
+            if _active != proxy.IS_ACTIVE:
+                continue
 
-                proxies.append(proxy)
+            proxies.append(proxy)
 
         return proxies
 
 
-    async def setup(self):
+
+    async def test_fetched_proxies(self) -> list[ProxyInfo]:
+        """
+            Use this method, to test all fetched proxies.
+            ProvidersManager.test_proxies() returns None.
+        """
         aio: AIOBase = AIOBase(_semaphore = 5)
 
-        # Fetch all proxies from all providers --->
+        # Test all proxies from each provider
+        # --->
+        for provider in self.ProxyProviders:
+            aio.add_task(provider.test_all_proxies, 300)
+
+        tested_proxies = await aio.run_tasks()
+        # <---
+
+        # Set all tested proxies too self.ALL_PROXIES
+        # --->
+        proxies: list[ProxyInfo] = []
+        for tested_proxy_list in tested_proxies:
+            proxies.extend(tested_proxy_list)
+        
+        self.ALL_PROXIES = proxies
+        # <---
+
+        return self.ALL_PROXIES
+
+
+    async def fetch_proxies(self) -> list[ProxyInfo]:
+        aio: AIOBase = AIOBase(_semaphore = 5)
+
+        # Fetch all proxies from each provider
+        # --->
         for provider in self.ProxyProviders:
             aio.add_task(provider.fetch_proxies)
 
-        await aio.run_tasks()
+        provider_proxies = await aio.run_tasks()
         # <---
 
+        # Set all fetched proxies to self.ALL_PROXIES
+        # --->
+        proxies: list[ProxyInfo] = []
+        for provider_proxy_list in provider_proxies:
+            proxies.extend(provider_proxy_list)
 
-        # Clear old tasks
-        aio.clear_tasks()
-
-
-        # Test all proxies --->
-        for provider in self.ProxyProviders:
-            aio.add_task(provider.test_all_proxies, 500)
-
-        await aio.run_tasks()
+        self.ALL_PROXIES = proxies
         # <---
+
+        return self.ALL_PROXIES

@@ -34,7 +34,7 @@ class ProxyProvider:
 
         # Create the ProxyTester instance, for easier proxy testing.
         self.ProxyTester: ProxyTester = ProxyTester(
-            _connection_timeout = 1,
+            _connection_timeout = 2,
             _debug = self.DEBUG
         )
 
@@ -101,7 +101,7 @@ class ProxyProvider:
 
         return _proxy
 
-    async def test_all_proxies(self, _concurrent_tasks: int = 10) -> None:
+    async def test_all_proxies(self, _concurrent_tasks: int = 10) -> list[ProxyInfo]:
         self.Logger.log("Testing all provided proxies.")
 
         aio = AIOBase(_semaphore = _concurrent_tasks)
@@ -110,3 +110,5 @@ class ProxyProvider:
             aio.add_task(self.test_proxy, proxy)
         
         results = await aio.run_tasks()
+
+        return results

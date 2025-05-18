@@ -68,7 +68,7 @@ class SpysOne(ProxyProvider):
             _debug = self.DEBUG
         )
 
-    async def fetch_proxies(self) -> None:
+    async def fetch_proxies(self) -> list[ProxyInfo]:
         HTML = await self.download_page()
 
         if not HTML:
@@ -82,3 +82,5 @@ class SpysOne(ProxyProvider):
 
         for proxy in proxies:
             await self.add_new_proxy(_new_proxy = proxy)
+
+        return self.PROXIES

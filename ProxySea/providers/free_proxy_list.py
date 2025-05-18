@@ -42,7 +42,7 @@ class FreeProxyListScrapper:
 
 
 class FreeProxyList(ProxyProvider):
-    def __init__(self, _debug = False) -> None:
+    def __init__(self, _debug = False) -> list[ProxyInfo]:
         self.DEBUG = _debug
 
         super().__init__(
@@ -64,3 +64,5 @@ class FreeProxyList(ProxyProvider):
 
         for proxy in proxies:
             await self.add_new_proxy(_new_proxy = proxy)
+
+        return self.PROXIES
