@@ -3,6 +3,7 @@ from ProxySea.util.proxy_tester import ProxyTester
 from ProxySea.providers.spys_one import SpysOne
 from ProxySea.providers.free_proxy_list import FreeProxyList
 from ProxySea.providers import ProvidersManager
+from ProxySea.util import ProxyInfo
 
 from typing import Literal
 import asyncio, datetime, time
@@ -27,10 +28,12 @@ async def main() -> None:
     fetched_proxies = await PM.fetch_proxies()
     [print(proxy, len(fetched_proxies)) for proxy in fetched_proxies]
 
-    tested_proxies = await PM.test_fetched_proxies()
+    tested_proxies = await PM.test_proxies(_proxies = fetched_proxies)
     [print(proxy, len(tested_proxies)) for proxy in tested_proxies]
 
-    active_proxies: list = await PM.get_proxies(_active = True)
+    print()
+
+    active_proxies: list = PM.filter_proxies(_proxies = tested_proxies, _active = True)
     [print(proxy, len(active_proxies)) for proxy in active_proxies]
 
     # all_proxies: list = []

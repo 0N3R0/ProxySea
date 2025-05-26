@@ -3,7 +3,7 @@ from ..imports import bs4, lxml, typing
 
 class FreeProxyListScrapper:
     def __init__(self, _html: str) -> None:
-        self.HTML = bs4.BeautifulSoup(_html, "lxml")
+        self.html = bs4.BeautifulSoup(_html, "lxml")
         
         self.ANONYMITY_LEVELS: dict[str] = {
             "elite proxy": "HIGH",
@@ -12,7 +12,7 @@ class FreeProxyListScrapper:
         }
 
     def scrape_proxies(self) -> list[str]:
-        table = self.HTML.select_one("#list > div > div.table-responsive > div > table > tbody")
+        table = self.html.select_one("#list > div > div.table-responsive > div > table > tbody")
         proxies: list[str] = []
 
         # Check for every <tr> element in <tbody>
@@ -42,27 +42,27 @@ class FreeProxyListScrapper:
 
 
 class FreeProxyList(ProxyProvider):
-    def __init__(self, _debug = False) -> list[ProxyInfo]:
-        self.DEBUG = _debug
+    def __init__(self, _debug: bool = False) -> None:
+        self.debug: bool = _debug
 
         super().__init__(
             _provider_url = "https://free-proxy-list.net/",
-            _debug = self.DEBUG
+            _debug = self.debug
         )
 
     async def fetch_proxies(self) -> None:
-        HTML = await self.download_page()
+        html = await self.download_page()
 
-        if not HTML:
-            return
+        if not html:
+            return []
 
-        FPLS: FreeProxyListScrapper = FreeProxyListScrapper(_html = HTML)
-        proxies: list[str] = FPLS.scrape_proxies()
+        free_proxy_list_scrapper: FreeProxyListScrapper = FreeProxyListScrapper(_html = html)
+        proxies: list[str] = free_proxy_list_scrapper.scrape_proxies()
 
         if not proxies:
-            return
+            return []
 
         for proxy in proxies:
-            await self.add_new_proxy(_new_proxy = proxy)
+            self.add_new_proxy(_new_proxy = proxy)
 
-        return self.PROXIES
+        return self.proxies

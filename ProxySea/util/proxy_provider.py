@@ -17,82 +17,94 @@ from ..imports import typing
 
 class ProxyProvider:
     def __init__(self, _provider_url: str, _debug: bool = False) -> None:
-        self.DEBUG: bool = _debug
+        self.debug: bool = _debug
         
         # Some basic information
-        self.URL: str = _provider_url
-        self.DOMAIN: str = self.URL.split("://")[1].split("/")[0]
+        self.url: str = _provider_url
+        self.domain: str = _provider_url.split("://")[1].split("/")[0]
 
         # Proxies variables
-        self.PROXIES: list[ProxyInfo] = []
+        self.proxies: list[ProxyInfo] = []
 
         # Create the Logger instance, for easier logging.
-        self.Logger: Logger = Logger(
-            _logger_name = f"ProxyProvider [{self.DOMAIN}]",
-            _debug = self.DEBUG
+        self.logger: Logger = Logger(
+            _logger_name = f"ProxyProvider [{self.domain}]",
+            _debug = self.debug
         )
 
         # Create the ProxyTester instance, for easier proxy testing.
-        self.ProxyTester: ProxyTester = ProxyTester(
+        self.proxy_tester: ProxyTester = ProxyTester(
             _connection_timeout = 2,
-            _debug = self.DEBUG
+            _debug = self.debug
         )
 
-        # Create the HTTPClient instance, for easier page downloading.
-        self.HttpClient = HttpClient(_url = self.URL)
+        # Create the HttpClient instance, for easier page downloading.
+        self.http_client = HttpClient(_url = self.url)
 
-    async def download_page(self) -> typing.Any:
-        return await self.HttpClient.get()
-
-
-    async def add_new_proxy(self, _new_proxy: ProxyInfo) -> None:
-        is_new = _new_proxy.ID not in [proxy.ID for proxy in self.PROXIES]
+    def add_new_proxy(self, _new_proxy: ProxyInfo) -> None:
+        is_new = _new_proxy.id not in [proxy.id for proxy in self.proxies]
 
         if not is_new:
             return
-        
-        self.PROXIES.append(_new_proxy)
+
+        self.proxies.append(_new_proxy)
+
+
+    async def download_page(self) -> typing.Any:
+        res = None
+
+        try:
+            res = await self.http_client.get()
+        except Exception as e:
+            self.logger.log(f"Exception during fetching page: {e}")
+
+        if res:
+            self.logger.log(f"Fetched page successfully.")
+        else:
+            self.logger.log(f"Something went wrong while fetching page.")
+
+        return res
     
-    async def test_proxy(self, _proxy: ProxyInfo) -> ProxyInfo:
-        self.Logger.log(f"Starting testing proxy: {_proxy}")
+    async def test_proxy(self, _proxy: ProxyInfo) -> typing.Optional[ProxyInfo]:
+        self.logger.log(f"Starting testing proxy: {_proxy}")
 
         # If proxy is blacklisted, skip that proxy.
-        if _proxy.IS_BLACKLISTED:
-            self.Logger.log(f"This proxy is blacklisted: {_proxy}")
+        if _proxy.is_blacklisted:
+            self.logger.log(f"This proxy is blacklisted: {_proxy}")
             return
 
         # Check if provided proxy has defined valid proxy_scheme
-        if not _proxy.SCHEME or _proxy.SCHEME not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
+        if not _proxy.scheme or _proxy.scheme not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]:
             # If the proxy doesn't have provided scheme of proxy, or is not in ["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]
 
             # We are trying to detect the scheme of the proxy
-            proxy_host, proxy_port, proxy_scheme = await self.ProxyTester.detect_scheme(
-                _host = _proxy.HOST,
-                _port = _proxy.PORT
+            proxy_host, proxy_port, proxy_scheme = await self.proxy_tester.detect_scheme(
+                _host = _proxy.host,
+                _port = _proxy.port
             )
 
             # Checking if we got the proxy_scheme
             if proxy_scheme:
                 # If we got the proxy_scheme, we are setting it and changing the active state of proxy to True
-                _proxy.change_proxy_scheme(_scheme = proxy_scheme)
-                _proxy.change_is_active(_active = True)
+                _proxy.set_proxy_scheme(_scheme = proxy_scheme)
+                _proxy.set_is_active(_active = True)
 
             else:
-                # Else we are changing the state of proxy to False
-                _proxy.change_is_active(_active = False)
+                # Otherwise, we are changing the state of proxy to False
+                _proxy.set_is_active(_active = False)
 
         else:
             # If the proxy_scheme was provided, we are just checking the connection for provided proxy_scheme
 
-            is_alive = await self.ProxyTester.check_connection(
-                _scheme = _proxy.SCHEME,
-                _host = _proxy.HOST,
-                _port = _proxy.PORT
+            is_alive = await self.proxy_tester.check_connection(
+                _scheme = _proxy.scheme,
+                _host = _proxy.host,
+                _port = _proxy.port
             )
 
-            _proxy.change_is_active(_active = is_alive)
+            _proxy.set_is_active(_active = is_alive)
 
-        self.Logger.log(_proxy)
+        self.logger.log(_proxy)
 
         # Call the method to update connection_retries variable
         # in _proxy class, to check if this proxy should be
@@ -102,11 +114,11 @@ class ProxyProvider:
         return _proxy
 
     async def test_all_proxies(self, _concurrent_tasks: int = 10) -> list[ProxyInfo]:
-        self.Logger.log("Testing all provided proxies.")
+        self.logger.log("Testing all provided proxies.")
 
         aio = AIOBase(_semaphore = _concurrent_tasks)
 
-        for proxy in self.PROXIES:
+        for proxy in self.proxies:
             aio.add_task(self.test_proxy, proxy)
         
         results = await aio.run_tasks()
