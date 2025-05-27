@@ -16,18 +16,28 @@ class ProxyInfo:
         - The `_anonymity_level` parameter is optional and will default to `None` if not provided.
 
     Attributes:
-        scheme (str | None): Protocol used by the proxy (e.g., 'HTTP', 'HTTPS', 'SOCKS4', 'SOCKS5'), or None.
-        host (str): Proxy server's IP address or hostname.
-        port (int): Port number of the proxy.
-        anonymity_level (str | None): Proxy anonymity classification ('HIGH', 'MEDIUM', 'LOW'), or None.
-        is_active (bool): Whether the proxy is currently marked as active.
-        connection_retries (int): Number of failed connection attempts.
-        blacklist_after (int): Retry threshold after which the proxy is considered blacklisted.
+        scheme (str | None):
+            Protocol used by the proxy (e.g., 'HTTP', 'HTTPS', 'SOCKS4', 'SOCKS5'), or None.
+        host (str):
+            Proxy server's IP address or hostname.
+        port (int):
+            Port number of the proxy.
+        anonymity_level (str | None):
+            Proxy anonymity classification ('HIGH', 'MEDIUM', 'LOW'), or None.
+        is_active (bool):
+            Whether the proxy is currently marked as active.
+        connection_retries (int):
+            Number of failed connection attempts.
+        blacklist_after (int):
+            Retry threshold after which the proxy is considered blacklisted.
 
     Properties:
-        id (str): Unique proxy identifier, formatted as "HOST|PORT".
-        url (str): Full proxy address, formatted as "SCHEME://HOST:PORT".
-        is_blacklisted (bool): True if retry threshold exceeded.
+        id (str):
+            Unique proxy identifier, formatted as "HOST|PORT".
+        url (str):
+            Full proxy address, formatted as "SCHEME://HOST:PORT".
+        is_blacklisted (bool):
+            True if retry threshold exceeded.
 
     Methods:
         set_proxy_scheme(_scheme):
@@ -39,6 +49,27 @@ class ProxyInfo:
         update_connection_retries():
             Increments retry count if inactive, resets if active.
             No changes occur if proxy is blacklisted.
+
+    Examples:
+    ```
+        >>> proxy = ProxyInfo("HTTP", "192.168.1.100", 8080, "HIGH")
+
+        >>> print(proxy.id)
+        >>> 192.168.1.100|8080 # Result of the print
+
+        >>> print(proxy.url)
+        >>> HTTP://192.168.1.100:8080 # Result of the print
+
+        >>> proxy.set_is_active(True)
+        >>> proxy.update_connection_retries()
+        >>> print(proxy.connection_retries)
+        >>> 0 # Result of the print
+
+        >>> proxy.set_is_active(False)
+        >>> proxy.update_connection_retries()
+        >>> print(proxy.connection_retries)
+        >>> 1 # Result of the print
+    ```
     """
 
     def __init__(
@@ -55,10 +86,17 @@ class ProxyInfo:
         Args:
             _scheme (Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"] | None):
                 The proxy protocol scheme. Can be None if unknown.
-            _host (str): Hostname or IP address of the proxy.
-            _port (int): Port number of the proxy.
+            _host (str):
+                Hostname or IP address of the proxy.
+            _port (int):
+                Port number of the proxy.
             _anonymity_level (Literal["HIGH", "MEDIUM", "LOW"] | None):
                 Level of anonymity provided by the proxy. Can be None if unknown.
+
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTP", "192.168.1.1", 8080, "MEDIUM")
+        ```
         """
 
         self.scheme: typing.Optional[str] = _scheme.upper() if _scheme else _scheme
@@ -74,9 +112,20 @@ class ProxyInfo:
     @property
     def id(self) -> str:
         """
-        Returns `id` of proxy.
+        Returns the unique identifier of the proxy.
 
-        Like: 192.168.0.1|8080 instead of 192.168.0.1:8080.
+        Formatted as "HOST|PORT" (e.g., "192.168.0.1|8080").
+
+        Returns:
+            str:
+                Unique proxy ID.
+
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTP", "192.168.0.1", 8080)
+            >>> print(proxy.id)
+            >>> 192.168.0.1|8080 # Result of the print
+        ```
         """
 
         return f"{self.host}|{self.port}"
@@ -84,9 +133,20 @@ class ProxyInfo:
     @property
     def url(self) -> str:
         """
-        Returns the proxy url.
+        Returns the full proxy URL string.
 
-        Like: HTTP://192.168.0.1:8080.
+        Formatted as "SCHEME://HOST:PORT" (e.g., "HTTP://192.168.0.1:8080").
+
+        Returns:
+            str:
+                Full proxy URL.
+
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTP", "192.168.0.1", 8080)
+            >>> print(proxy.url)
+            >>> HTTP://192.168.0.1:8080 # Result of the print
+        ```
         """
 
         return f"{self.scheme}://{self.host}:{self.port}"
@@ -94,7 +154,19 @@ class ProxyInfo:
     @property
     def is_blacklisted(self) -> bool:
         """
-        Returns True if `connection_retries` > `blacklist_after` else returns False.
+        Indicates if the proxy is blacklisted based on connection retries.
+
+        Returns:
+            bool:
+                True if `connection_retries` exceeds `blacklist_after`, else False.
+
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTP", "192.168.0.1", 8080)
+            >>> proxy.connection_retries = 4
+            >>> print(proxy.is_blacklisted)
+            >>> True # Result of the print
+        ```
         """
 
         return self.connection_retries > self.blacklist_after
@@ -105,14 +177,17 @@ class ProxyInfo:
         Sets the proxy scheme (protocol) for this proxy instance.
 
         Args:
-            _scheme (Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]): 
+            _scheme (Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]):
                 New protocol to assign to the proxy.
 
         Raises:
             ValueError: If `_scheme` is not provided or is not one of the allowed values.
 
-        Example:
-            proxy.set_proxy_scheme("SOCKS5")
+        Examples:
+        ```
+            >>> proxy = ProxyInfo(None, "192.168.0.1", 8080)
+            >>> proxy.set_proxy_scheme("SOCKS5")
+        ```
         """
         
         if not _scheme:
@@ -135,8 +210,11 @@ class ProxyInfo:
         Raises:
             ValueError: If `_active` is not a boolean.
 
-        Example:
-            proxy.set_is_active(True)
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTPS", "192.168.0.2", 3128)
+            >>> proxy.set_is_active(True)
+        ```
         """
 
         if not isinstance(_active, bool):
@@ -157,8 +235,15 @@ class ProxyInfo:
         This method is used to automatically track the reliability of a proxy during
         connection attempts.
 
-        Example:
-            proxy.update_connection_retries()
+        Examples:
+        ```
+            >>> proxy = ProxyInfo("HTTP", "10.0.0.5", 8080)
+
+            >>> proxy.set_is_active(False)
+            >>> proxy.update_connection_retries()
+            >>> proxy.connection_retries
+            >>> 1 # Result of the print
+        ```
         """
 
         
@@ -205,6 +290,15 @@ class ProxySchemeDetector:
 
         detect_proxy_scheme_parallel(_host, _port):
             Attempt all scheme detections in parallel and return the first valid one.
+    
+    Examples:
+    ```
+        >>> detector = ProxySchemeDetector(_connection_timeout=3, _debug=True)
+
+        >>> scheme = await detector.detect_proxy_scheme_parallel("192.168.1.1", 8080)
+        >>> print(scheme)
+        >>> HTTP # Result of the print
+    ```
     """
 
 
@@ -214,11 +308,26 @@ class ProxySchemeDetector:
             _debug: bool = False
         ) -> None:
         """
-        Initializes the proxy scheme detector.
+        Initializes the ProxySchemeDetector instance with connection and logging settings.
+
+        Sets up internal timeout configuration, initializes a logger for debug output,
+        and defines a list of supported proxy schemes to be tested.
 
         Args:
-            _connection_timeout (int): Timeout for connection attempts, in seconds.
-            _debug (bool): If True, enables verbose logging for debugging purposes.
+            _connection_timeout (int):
+                Timeout value (in seconds) for each individual connection attempt.
+            _debug (bool):
+                If True, enables debug logging output for internal events and detection status.
+
+        Returns:
+            None
+
+        Examples:
+        ```
+            >>> detector = ProxySchemeDetector(_connection_timeout=5, _debug=True)
+            >>> print(detector.PROXY_SCHEMES)
+            >>> ['HTTPS', 'HTTP', 'SOCKS5', 'SOCKS4']  # Result of the print
+        ```
         """
         self.debug: bool = _debug
 
@@ -238,15 +347,30 @@ class ProxySchemeDetector:
 
     async def is_socks4(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
         """
-        Checks whether the proxy at the given host and port supports the SOCKS4 protocol.
+        Checks if the proxy server supports the SOCKS4 protocol.
+
+        It sends a minimal SOCKS4 connection request and checks if the response
+        matches the expected success byte (0x5A), indicating a valid SOCKS4 server.
 
         Args:
-            _host (str): Proxy host.
-            _port (int): Proxy port.
-            _delay_before_request (float): Optional delay before attempting the connection.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
+            _delay_before_request (float):
+                Optional delay (in seconds) before attempting the connection.
 
         Returns:
-            bool: True if the proxy responds as a SOCKS4 server, False otherwise.
+            bool:
+                - True if the proxy responds with a valid SOCKS4 response.
+                - False if something went wrong.
+
+        Examples:
+        ```
+            >>> is_socks4 = await detector.is_socks4("127.0.0.1", 9050)
+            >>> print(is_socks4)
+            >>> True  # Result of the print
+        ```
         """
         
         is_alive: bool = False
@@ -287,15 +411,30 @@ class ProxySchemeDetector:
 
     async def is_socks5(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
         """
-        Checks whether the proxy at the given host and port supports the SOCKS5 protocol.
+        Checks if the proxy server supports the SOCKS5 protocol.
+
+        It attempts to initiate a SOCKS5 handshake. If the proxy responds with a valid
+        SOCKS5 version byte (0x05), it is considered to support SOCKS5.
 
         Args:
-            _host (str): Proxy host.
-            _port (int): Proxy port.
-            _delay_before_request (float): Optional delay before attempting the connection.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
+            _delay_before_request (float):
+                Optional delay (in seconds) before attempting the connection.
 
         Returns:
-            bool: True if the proxy responds as a SOCKS5 server, False otherwise.
+            bool:
+                - True if the proxy responds with a valid SOCKS5 response.
+                - False if something went wrong.
+
+        Examples:
+        ```
+            >>> is_socks5 = await detector.is_socks5("10.10.1.1", 1080)
+            >>> print(is_socks5)
+            >>> False  # Result of the print
+        ```
         """
 
         is_alive: bool = False
@@ -328,17 +467,30 @@ class ProxySchemeDetector:
 
     async def is_http(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
         """
-        Checks whether the proxy at the given host and port supports the HTTP protocol.
+        Checks if the proxy server supports the HTTP protocol.
 
-        Sends a basic HTTP GET request and examines the response to verify proxy behavior.
+        Sends a raw HTTP GET request and analyzes the response headers to determine
+        if it behaves like an HTTP proxy (i.e., returns a valid HTTP response).
 
         Args:
-            _host (str): Proxy host.
-            _port (int): Proxy port.
-            _delay_before_request (float): Optional delay before attempting the connection.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
+            _delay_before_request (float):
+                Optional delay (in seconds) before attempting the connection.
 
         Returns:
-            bool: True if the proxy responds with a valid HTTP response, False otherwise.
+            bool:
+                - True if a valid HTTP response has been received.
+                - False if something went wrong.
+
+        Examples:
+        ```
+            >>> is_http = await detector.is_http("192.168.1.100", 8080)
+            >>> print(is_http)
+            >>> True  # Result of the print
+        ```
         """
 
         is_alive: bool = False
@@ -386,17 +538,30 @@ class ProxySchemeDetector:
     # Detect whether the scheme of proxy is HTTPS
     async def is_https(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
         """
-        Checks whether the proxy at the given host and port supports the HTTPS protocol.
+        Checks if the proxy server supports the HTTPS protocol.
 
-        Establishes an SSL/TLS handshake with the endpoint to determine support.
+        Attempts to establish an SSL/TLS handshake with the proxy. If the connection
+        completes successfully without certificate verification, it is assumed to support HTTPS.
 
         Args:
-            _host (str): Proxy host.
-            _port (int): Proxy port.
-            _delay_before_request (float): Optional delay before attempting the connection.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
+            _delay_before_request (float):
+                Optional delay (in seconds) before attempting the connection.
 
         Returns:
-            bool: True if the proxy accepts an SSL handshake, False otherwise.
+            bool:
+                - True if the SSL/TLS handshake succeeds.
+                - False if something went wrong.
+
+        Examples:
+        ```
+            >>> is_https = await detector.is_https("proxy.example.com", 443)
+            >>> print(is_https)
+            >>> False  # Result of the print
+        ```
         """
 
         is_alive: bool = False
@@ -431,15 +596,25 @@ class ProxySchemeDetector:
         """
         Attempts to detect the proxy's scheme by testing all known protocols in parallel.
 
-        Returns the name of the first matching scheme (e.g., "HTTP", "HTTPS", "SOCKS4", "SOCKS5").
-        If none match, returns None or may implicitly return None (if not handled explicitly).
+        Runs asynchronous checks for HTTPS, HTTP, SOCKS5, and SOCKS4 with staggered delays.
+        Returns the first scheme that successfully completes its protocol-specific handshake.
 
         Args:
-            _host (str): Proxy host.
-            _port (int): Proxy port.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
 
         Returns:
-            str: Detected proxy scheme, or None if none matched.
+              str | None:
+                - The name of the detected scheme (e.g., 'HTTP', 'SOCKS5'), or None if none matched.
+
+        Examples:
+        ```
+            >>> scheme = await detector.detect_proxy_scheme_parallel("127.0.0.1", 1080)
+            >>> print(scheme)
+            >>> SOCKS5  # Result of the print
+        ```
         """
 
         aio = AIOBase(_semaphore = 4)
@@ -481,6 +656,19 @@ class ProxyTester:
 
         detect_scheme(_host, _port):
             Asynchronously attempts to determine the correct proxy scheme by testing all supported types in parallel.
+
+    Examples:
+    ```
+        >>> tester = ProxyTester(_connection_timeout=10, _debug=True)
+
+        >>> result = await tester.check_connection("SOCKS5", "192.168.1.1", 1080)
+        >>> print(result)
+        >>> True # Result of the print
+
+        >>> host, port, scheme = await tester.detect_scheme("192.168.1.1", 1080)
+        >>> print(f"{host}:{port} uses {scheme}")
+        >>> 192.168.1.1:1080 uses SOCKS5 # Result of the print
+    ```
     """
 
     def __init__(
@@ -489,11 +677,27 @@ class ProxyTester:
             _debug: bool = False
         ) -> None:
         """
-        Initializes proxy tester.
+        Initializes the ProxyTester instance with configuration for timeout and logging.
+
+        Creates internal instances of ProxySchemeDetector and Logger to handle proxy testing
+        and logging output.
 
         Args:
-            _connection_timeout (int): Timeout for connection attempts, in seconds.
-            _debug (bool): If True, enables verbose logging for debugging purposes.
+            _connection_timeout (int):
+                The timeout value (in seconds) to use for proxy connection attempts.
+            _debug (bool):
+                If True, enables debug logging output for verbose feedback.
+
+        Examples:
+        ```
+            >>> tester = ProxyTester(_connection_timeout=10, _debug=True)
+
+            >>> print(tester.connection_timeout)
+            >>> 10  # Result of the print
+
+            >>> print(tester.debug)
+            >>> True  # Result of the print
+        ```
         """
 
         self.debug: bool = _debug
@@ -517,21 +721,35 @@ class ProxyTester:
 
     async def check_connection(self, _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"], _host: str, _port: int) -> bool:
         """
-        Tests if a proxy server is reachable using the specified scheme.
+        Checks whether a connection to the given proxy server can be established using a specific scheme.
+
+        This method delegates the connection attempt to a dedicated scheme-specific detector method.
 
         Args:
-            _scheme (Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]): The proxy scheme to test.
-            _host (str): The hostname or IP address of the proxy.
-            _port (int): The port number of the proxy.
+            _scheme (Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]):
+                The proxy protocol to use for the connection test.
+            _host (str):
+                The IP address or hostname of the proxy.
+            _port (int):
+                The port number on which the proxy is running.
 
         Returns:
-            bool: True if the connection was successful, False otherwise.
+            bool:
+                - True if the connection is successful.
+                - False if the connection fails or the scheme is invalid.
 
         Raises:
-            ValueError: If the provided scheme is not recognized.
+            ValueError:
+                If the provided scheme is not one of the allowed options.
 
-        Example:
-            is_alive = await check_connection("HTTPS", "192.168.0.1", 8080)
+        Examples:
+        ```
+            >>> tester = ProxyTester(_debug=True)
+
+            >>> success = await tester.check_connection("HTTP", "192.168.0.1", 8080)
+            >>> print(success)
+            >>> True  # Result of the print
+        ```
         """
 
         _scheme = _scheme.upper()
@@ -558,20 +776,31 @@ class ProxyTester:
 
     async def detect_scheme(self, _host: str, _port: int) -> tuple[str, int, str | None]:
         """
-        Attempts to detect the proxy scheme of a given proxy server by testing all known types in parallel.
+        Attempts to determine the correct scheme (protocol) of a proxy server.
+
+        It launches parallel checks for all supported schemes (SOCKS4, SOCKS5, HTTP, HTTPS) and
+        returns the first one that succeeds.
 
         Args:
-            _host (str): The hostname or IP address of the proxy.
-            _port (int): The port number of the proxy.
+            _host (str):
+                The hostname or IP address of the proxy.
+            _port (int):
+                The port number on which the proxy is operating.
 
         Returns:
-            tuple[str, int, str | None]. Consisting of:
-                - the host (str),
-                - the port (int),
-                - the detected scheme (str), or None if no valid connection was established.
+               tuple[str, int, str | None]:
+                - The host address.
+                - The port number.
+                - The detected scheme (e.g., 'HTTP', 'SOCKS5'), or None if none succeeded.
 
-        Example:
-            host, port, scheme = await detect_scheme("192.168.0.1", 8080)
+        Examples:
+        ```
+            >>> tester = ProxyTester(_debug=True)
+
+            >>> host, port, scheme = await tester.detect_scheme("10.0.0.1", 9050)
+            >>> print(host, port, scheme)
+            >>> 10.0.0.1 9050 SOCKS5  # Result of the print
+        ```
         """
         start: float = time.perf_counter()
 
