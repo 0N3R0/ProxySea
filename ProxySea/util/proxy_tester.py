@@ -1,7 +1,8 @@
+from ..imports import typing, asyncio, time, ssl
+
 from ..logger import Logger
 from .aio import AIOBase
 
-from ..imports import typing, asyncio, time, ssl
 
 class ProxyInfo:
     """
@@ -75,7 +76,9 @@ class ProxyInfo:
     def __init__(
             self,
             _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"] | None,
-            _host: str, _port: int, _anonymity_level: typing.Literal["HIGH", "MEDIUM", "LOW"] | None = None
+            _host: str,
+            _port: int,
+            _anonymity_level: typing.Literal["HIGH", "MEDIUM", "LOW"] | None = None
         ) -> None:
         """
         Initializes a ProxyInfo instance with protocol, host, port, and anonymity level.
@@ -169,7 +172,7 @@ class ProxyInfo:
         ```
         """
 
-        return self.connection_retries > self.blacklist_after
+        return self.connection_retries >= self.blacklist_after
 
 
     def set_proxy_scheme(self, _scheme: typing.Literal["HTTPS", "HTTP", "SOCKS5", "SOCKS4"]) -> None:

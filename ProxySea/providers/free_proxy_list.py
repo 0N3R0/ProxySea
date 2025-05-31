@@ -62,7 +62,4 @@ class FreeProxyList(ProxyProvider):
         if not proxies:
             return []
 
-        for proxy in proxies:
-            self.add_new_proxy(_new_proxy = proxy)
-
-        return self.proxies
+        return proxies

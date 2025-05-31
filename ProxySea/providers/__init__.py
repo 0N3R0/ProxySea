@@ -4,22 +4,12 @@ from ..logger import Logger
 from .free_proxy_list import FreeProxyList
 from .spys_one import SpysOne
 
-
-class ProvidersManager:
+class ProvidersProxyTester:
     def __init__(self, _debug: bool = False) -> None:
-        self.debug: bool = _debug
+        self.debug = _debug
 
-        self.PROVIDERS: list[ProxyProvider] = [
-            FreeProxyList(
-                _debug = self.debug
-            ),
-            SpysOne(
-                _debug = self.debug
-            )
-        ]
-
-        self.logger = Logger(
-            _logger_name = "ProvidersManager",
+        self.logger: Logger = Logger(
+            _logger_name = "ProvidersProxyTester",
             _debug = self.debug
         )
 
@@ -27,29 +17,7 @@ class ProvidersManager:
             _connection_timeout = 5,
             _debug = self.debug
         )
-
     
-    async def fetch_proxies(self) -> list[ProxyInfo]:
-        aio: AIOBase = AIOBase(_semaphore = 5)
-
-        # Fetch all proxies from each provider
-        # --->
-        for provider in self.PROVIDERS:
-            aio.add_task(provider.fetch_proxies)
-
-        provider_proxies = await aio.run_tasks()
-        # <---
-
-        # Append all fetched proxies to the proxies list, and return it.
-        # --->
-        proxies: list[ProxyInfo] = []
-        for provider_proxy_list in provider_proxies:
-            proxies.extend(provider_proxy_list)
-        # <---
-
-        return proxies
-
-
     async def test_proxy(self, _proxy: ProxyInfo) -> ProxyInfo:
         self.logger.log(f"Starting testing proxy: {_proxy}")
 
@@ -98,7 +66,6 @@ class ProvidersManager:
 
         return _proxy
 
-
     async def test_proxies(self, _proxies: list[ProxyInfo], _concurrent_tasks: int = 500) -> list[ProxyInfo]:
         if not _proxies:
             return []
@@ -117,7 +84,53 @@ class ProvidersManager:
         return tested_proxies
 
 
-    def filter_proxies(
+class ProvidersManager:
+    def __init__(self, _debug: bool = False) -> None:
+        self.debug: bool = _debug
+
+        self.PROVIDERS: list[ProxyProvider] = [
+            FreeProxyList(
+                _debug = self.debug
+            ),
+            SpysOne(
+                _debug = self.debug
+            )
+        ]
+
+        self.logger: Logger = Logger(
+            _logger_name = "ProvidersManager",
+            _debug = self.debug
+        )
+
+    
+    async def fetch_proxies(self, _concurrent_tasks: int = 10) -> list[ProxyInfo]:
+        aio: AIOBase = AIOBase(_semaphore = _concurrent_tasks)
+
+        # Fetch all proxies from each provider
+        # --->
+        for provider in self.PROVIDERS:
+            aio.add_task(provider.fetch_proxies)
+
+        provider_proxies = await aio.run_tasks()
+        # <---
+
+        # Append all fetched proxies to the proxies list and skip duplicates, and return it.
+        # --->
+        proxies: list[ProxyInfo] = []
+        proxy_ids: list[str] = []
+
+        for prov_proxies in provider_proxies:
+            for proxy in prov_proxies:
+                if proxy.id in proxy_ids:
+                    continue
+
+                proxies.append(proxy)
+                proxy_ids.append(proxy.id)
+        # <---
+
+        return proxies
+
+    def get_proxies(
             self,
             _proxies: list[ProxyInfo],
             _active: bool = True,
@@ -133,13 +146,13 @@ class ProvidersManager:
         proxies: list[ProxyInfo] = []
 
         for proxy in _proxies:
+            if proxy.is_active != _active:
+                continue
+
             if _scheme not in [proxy.scheme, "ALL"]:
                 continue
 
             if _anonymity_level not in [proxy.anonymity_level, "ALL"]:
-                continue
-
-            if _active != proxy.is_active:
                 continue
 
             proxies.append(proxy)
