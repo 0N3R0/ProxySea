@@ -1,11 +1,11 @@
+# Default imports
+from ..imports import typing
+
 # Logger imports
 from ..logger import Logger
 
 # Util imports
 from .http_client import HttpClient
-
-# Default imports
-from ..imports import typing
 
 
 class ProxyProvider:

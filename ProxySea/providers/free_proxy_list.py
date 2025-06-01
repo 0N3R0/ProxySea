@@ -1,5 +1,6 @@
-from ..util import ProxyInfo, ProxyProvider
 from ..imports import bs4, lxml, typing
+
+from ..util import ProxyInfo, ProxyProvider
 
 class FreeProxyListScrapper:
     def __init__(self, _html: str) -> None:

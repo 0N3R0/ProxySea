@@ -22,9 +22,6 @@ async def main() -> None:
     # Test all provided proxies.tested_proxies: list[ProxyInfo] = await PS.test_proxies(_proxies = proxies, _concurrent_tasks = 500)
     # Provided proxies have to be an instance of ProxyInfo class.
     tested_proxies: list[ProxyInfo] = await PS.test_proxies(_proxies = proxies, _concurrent_tasks = 500)
-    tested_proxies: list[ProxyInfo] = await PS.test_proxies(_proxies = proxies, _concurrent_tasks = 500)
-    tested_proxies: list[ProxyInfo] = await PS.test_proxies(_proxies = proxies, _concurrent_tasks = 500)
-    tested_proxies: list[ProxyInfo] = await PS.test_proxies(_proxies = proxies, _concurrent_tasks = 500)
 
     # Limit proxies to be shown in terminal.
     [print(proxy) for index, proxy in enumerate(tested_proxies) if index < 5]

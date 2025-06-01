@@ -1,7 +1,8 @@
+from .imports import time
+
 from .providers import ProvidersManager, ProvidersProxyTester
 from .util import ProxyInfo
 from .logger import Logger
-from .imports import time
 
 class ProxySea:
     def __init__(self, _debug: bool = False) -> None:

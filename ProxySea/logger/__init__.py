@@ -1,7 +1,6 @@
 from ..imports import datetime, colorama
 
 
-# Some colors
 class CLR:
     RESET = colorama.Style.RESET_ALL
 
@@ -29,20 +28,19 @@ class CLR:
     NORMAL = colorama.Style.NORMAL
 
 
-# Logger class
 class Logger:
     def __init__(self, _logger_name: str = "Logger", _debug: bool = False) -> None:
-        self.DEBUG: bool = _debug
+        self.debug: bool = _debug
 
         # ID Information
-        self.LOGGER_NAME: str = f"[{_logger_name}]"
+        self.logger_name: str = f"[{_logger_name}]"
 
         self.CLR = CLR
     
     def log(self, message: str) -> None:
-        if not self.DEBUG:
+        if not self.debug:
             return
 
         now: datetime.datetime = datetime.datetime.now()
 
-        print(f"({CLR.YELLOW}{now.date()} {now.hour}:{now.minute}:{now.second}{CLR.RESET}) {CLR.GREEN}{self.LOGGER_NAME}{CLR.RESET} {CLR.NORMAL}{message}{CLR.RESET}")
+        print(f"({CLR.YELLOW}{now.date()} {now.hour}:{now.minute}:{now.second}{CLR.RESET}) {CLR.GREEN}{self.logger_name}{CLR.RESET} {CLR.NORMAL}{message}{CLR.RESET}")

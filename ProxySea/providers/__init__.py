@@ -1,5 +1,7 @@
-from ..util import ProxyProvider, ProxyInfo, AIOBase, ProxyTester
 from ..imports import typing
+
+from ..util import ProxyProvider, ProxyInfo, AIOBase, ProxyTester
+
 from ..logger import Logger
 from .free_proxy_list import FreeProxyList
 from .spys_one import SpysOne

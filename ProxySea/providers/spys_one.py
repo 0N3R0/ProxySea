@@ -1,5 +1,6 @@
-from ..util import ProxyProvider, ProxyInfo, MiniJS
 from ..imports import bs4, lxml, typing
+
+from ..util import ProxyProvider, ProxyInfo, MiniJS
 
 class SpysOneScrapper:
     def __init__(self, _html: str) -> None:
