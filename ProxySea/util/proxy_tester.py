@@ -468,7 +468,8 @@ class ProxySchemeDetector:
         return is_alive
 
 
-    async def is_http(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
+    # MAIN SOLUTION
+    # async def is_http(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
         """
         Checks if the proxy server supports the HTTP protocol.
 
@@ -538,6 +539,69 @@ class ProxySchemeDetector:
 
         except:
             pass
+
+        return is_alive
+
+    # TESTING SOLUTION
+    async def is_http(self, _host: str, _port: int, _delay_before_request: float = 0.0) -> bool:
+        is_alive = False
+        self.logger.log(f"Delaying HTTP request ({_host}:{_port}) for {_delay_before_request} seconds.")
+        await asyncio.sleep(delay=_delay_before_request)
+
+        try:
+            reader, writer = await asyncio.wait_for(
+                asyncio.open_connection(_host, _port),
+                timeout=self.connection_timeout
+            )
+
+            http_req = (
+                "GET http://example.com/ HTTP/1.1\r\n"
+                "Host: example.com\r\n"
+                "User-Agent: ProxySea/1.0\r\n"
+                "Connection: close\r\n"
+                "\r\n"
+            )
+            writer.write(http_req.encode("ascii"))
+
+            resp = await asyncio.wait_for(reader.read(2048), timeout=self.connection_timeout)
+
+            writer.close()
+            await writer.wait_closed()
+
+            if not resp or not resp.startswith(b"HTTP/"):
+                return False
+
+            try:
+                header_data = resp.decode("latin1", errors="ignore").split("\r\n\r\n")[0]
+            except Exception:
+                return False
+
+            lines = header_data.split("\r\n")
+            status_line = lines[0]
+            headers = {k.lower(): v.strip() for k, v in [
+                line.split(":", 1) for line in lines[1:] if ":" in line
+            ]}
+
+            parts = status_line.split(" ")
+            if len(parts) < 2 or not parts[1].isdigit():
+                return False
+
+            status_code = int(parts[1])
+
+            # Accept only 2xx or 3xx responses
+            if status_code < 200 or status_code >= 400:
+                return False
+
+            # Reject proxy auth and common failure codes
+            if "proxy-authenticate" in headers or status_code in {403, 407, 500, 502, 503}:
+                return False
+
+            # No assumptions based on missing "Via" or "X-Forwarded-For"
+            is_alive = True
+
+        except Exception as e:
+            if self.debug:
+                self.logger.log(f"HTTP proxy detection error on {_host}:{_port} → {type(e).__name__}: {e}")
 
         return is_alive
 
@@ -781,7 +845,7 @@ class ProxyTester:
         return result if result is not None else False
 
 
-    async def detect_scheme(self, _host: str, _port: int) -> tuple[str, int, str | None]:
+    async def detect_scheme(self, _host: str, _port: int, _strict: bool = False) -> tuple[str, int, str | None]:
         """
         Attempts to determine the correct scheme (protocol) of a proxy server.
 
@@ -793,6 +857,8 @@ class ProxyTester:
                 The hostname or IP address of the proxy.
             _port (int):
                 The port number on which the proxy is operating.
+            _strict (bool):
+                If set to True. This function will raiase an error.
 
         Returns:
                tuple[str, int, str | None]:
@@ -817,6 +883,10 @@ class ProxyTester:
             self.logger.log(
                 f"Testing proxy connection {self.logger.CLR.RED}failed{self.logger.CLR.RESET} ({proxy_scheme}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."
             )
+
+            if _strict:
+                raise ValueError(f"Could not detect proxy scheme for {_host}:{_port}.")
+
         else:
             self.logger.log(
                 f"Testing proxy connection {self.logger.CLR.GREEN}succeeded{self.logger.CLR.RESET} ({proxy_scheme}://{_host}:{_port}) in {(time.perf_counter() - start):.2f} seconds."

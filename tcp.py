@@ -2,7 +2,7 @@ import asyncio, requests
 from ProxySea import ProxySea
 from ProxySea.util import ProxyInfo
 
-PS: ProxySea = ProxySea(_debug = False)
+PS: ProxySea = ProxySea(_debug = True)
 
 # Fetch proxies for testing
 fetched_proxies: list[ProxyInfo] = asyncio.run(PS.fetch_proxies())
