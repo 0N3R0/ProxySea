@@ -151,4 +151,3 @@ class MiniJS:
         """
 
         return self.mini_racer.eval(f"{self.temp_script};{_value};")
-    

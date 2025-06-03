@@ -68,7 +68,7 @@ class ProxyProvider:
         )
 
         # Create the HttpClient instance, for easier page downloading.
-        self.http_client = HttpClient(_url = self.url)
+        self.http_client = HttpClient
 
     async def download_page(self) -> typing.Optional[str | dict]:
         """
@@ -91,12 +91,14 @@ class ProxyProvider:
         res: typing.Optional[str | dict] = None
 
         try:
-            res = await self.http_client.get()
+            res = await self.http_client.get(_url = self.url)
+
         except Exception as e:
             self.logger.log(f"Exception during fetching page: {e}")
 
         if res:
             self.logger.log(f"Fetched page successfully.")
+
         else:
             self.logger.log(f"Something went wrong while fetching page.")
 

@@ -37,7 +37,7 @@ class ProxySea:
                 list[ProxyInfo]: A list of fetched proxies converted into `ProxyInfo` object.
         """
 
-        self.logger.log(f"Starting fetching proxies from public providers.")
+        self.logger.log(f"Starting fetching proxies from {len(self.providers_manager.PROVIDERS)} public providers.")
 
         proxies: list[ProxyInfo] = await self.providers_manager.fetch_proxies(_concurrent_tasks = _concurrent_tasks)
 
@@ -81,4 +81,3 @@ class ProxySea:
         self.logger.log(f"Tested {len(tested_proxies)} proxies, {working} of them are flagged as working. Tested all proxies in {float(time.perf_counter() - start):.2f} seconds.")
 
         return tested_proxies
-

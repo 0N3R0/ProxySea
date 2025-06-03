@@ -3,3 +3,5 @@ beautifulsoup4
 lxml
 py-mini-racer
 pytest
+pytest-asyncio
+poetry

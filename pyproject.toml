@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "proxysea"
+version = "0.0.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+    "ignore::DeprecationWarning:py_mini_racer.*"
+]

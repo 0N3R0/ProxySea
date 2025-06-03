@@ -11,6 +11,12 @@ try:
     import datetime
     import colorama
 
+    # Tests imports
+    import pytest
+    import pytest_asyncio
+    import unittest
+    import poetry
+
     # Additional imports
     import dataclasses
     import typing

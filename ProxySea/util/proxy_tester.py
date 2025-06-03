@@ -524,13 +524,17 @@ class ProxySchemeDetector:
             writer.close()
             await writer.wait_closed()
 
-            is_alive = bool(
-                resp.startswith(b"HTTP/") and
-                b"200" in resp and
-                b"407" not in resp and
-                b"500" not in resp and
-                b"502" not in resp
-            )
+            print(resp)
+
+            is_alive = resp.startswith(b"HTTP/") and b"200" in resp
+
+            # is_alive = bool(
+            #     resp.startswith(b"HTTP/") and
+            #     b"200" in resp and
+            #     b"407" not in resp and
+            #     b"500" not in resp and
+            #     b"502" not in resp
+            # )
 
         except:
             pass
@@ -620,7 +624,7 @@ class ProxySchemeDetector:
         ```
         """
 
-        aio = AIOBase(_semaphore = 4)
+        aio = AIOBase(_semaphore = 2)
 
         # Add https proxy detect method
         aio.add_task(self.is_https, _host, _port, 1.9)
