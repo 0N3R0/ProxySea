@@ -68,7 +68,7 @@
   - `poetry` (for pyproject.toml)
   - `asyncio` (standard library)
 
-> All dependencies are listed in [requirements.txt](requirements.txt).
+> All dependencies are listed in [requirements.txt](./requirements.txt).
 
 ---
 
