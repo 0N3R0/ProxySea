@@ -47,7 +47,8 @@
 ## 🛠 Future-Roadmap
 
 - **Geolocation Metadata**: Augment each `ProxyInfo` with geolocation details (country, region, city) based on IP lookup.
-- **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services (e.g., `ipinfo.io`) to verify IP and latency.  
+- **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services to verify IP and latency.  
+- **More proxy providers**: Add more proxy providers for fetching more proxies.
 - **API Server**: Create and expose a REST API for real-time proxy access and management.  
 
 ---
@@ -61,8 +62,9 @@
   - `beautifulsoup4`
   - `lxml`
   - `py-mini-racer`
-  - `poetry` (for pyproject.toml)
   - `pytest` (for tests)
+  - `pytest-asyncio` (for tests)
+  - `poetry` (for pyproject.toml)
   - `asyncio` (standard library)
 
 > All dependencies are listed in [requirements.txt](requirements.txt).
