@@ -22,6 +22,15 @@
 
 ---
 
+## ⚠️ Disclaimer
+
+> **Intended for educational and research purposes only.**  
+> **No warranty** — The creator of ProxySea does **not take any responsibility** for how this software is used. You must ensure that your usage complies with all applicable laws and regulations in your jurisdiction.  
+> Whether you are scraping proxy data from public sources, testing network behavior, or sending requests via third-party proxies — **you use this software at your own risk**. Any misuse, abuse, or illegal activity carried out using ProxySea is solely the responsibility of the user.
+
+---
+
+
 ## ✨ Features
 
 | ✔️ | Feature                                                                                              |
