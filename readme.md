@@ -8,7 +8,7 @@
 
 ## 📜 Table of Contents
 
-1. [Disclaimer](#-disclaimer)
+1. [Disclaimer](#%EF%B8%8F-disclaimer)
 2. [Features](#-features)
 3. [Future Roadmap](#-future-roadmap)
 4. [Requirements](#-requirements)
