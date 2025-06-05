@@ -10,13 +10,15 @@
 
 1. [Disclaimer](#disclaimer)
 2. [Features](#features)
-3. [🛠 Future Roadmap](#future-roadmap)
-4. [Installation](#installation)
-5. [Usage Example](#usage-example)
-6. [Other Example Scripts](#other-example-scripts)
-7. [Project Structure](#project-structure)
-8. [Contributing](#contributing)
-9. [License](#license)
+3. [Future Roadmap](#future-roadmap)
+4. [Requirements](#requirements)
+5. [Installation](#installation)
+6. [Quick Start](#quick-start)
+7. [Usage Example](#usage-example)
+8. [Other Example Scripts](#other-example-scripts)
+9. [Project Structure](#project-structure)
+10. [Contributing](#contributing)
+11. [License](#license)
 
 ---
 
@@ -37,7 +39,7 @@
 | ✅ | **Protocol Detection**: Automatically detect each proxy’s protocol (HTTP, HTTPS, SOCKS4, SOCKS5).    |
 | ✅ | **Custom Proxy Testing**: Quickly test your own proxy list, with or without explicit schemes.        |
 | ✅ | **Built-in Logging**: Detailed debug logs help you trace and troubleshoot proxy operations.          |
-| ✅ | **Unit Tests Included**: Partial coverage of unit tests to ensure reliability.                       |
+| ✅ | **Unit Tests Included**: Partial coverage of unit tests to ensure reliability (see `tests/`).         |
 
 ---
 
@@ -46,6 +48,22 @@
 - **Geolocation Metadata**: Augment each `ProxyInfo` with geolocation details (country, region, city) based on IP lookup.
 - **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services (e.g., `ipinfo.io`) to verify IP and latency.  
 - **API Server**: Create and expose a REST API for real-time proxy access and management.  
+
+---
+
+## 🚧 Requirements
+
+- **Python**: 3.10 or higher  
+- **Libraries** (installed via `requirements.txt`):  
+  - `httpx`
+  - `requests`
+  - `beautifulsoup4`
+  - `lxml`
+  - `py-mini-racer`
+  - `pytest` (for tests)
+  - `asyncio` (standard library)
+
+> All dependencies are listed in [requirements.txt](requirements.txt).
 
 ---
 
@@ -60,6 +78,54 @@ git clone https://github.com/0N3R0/ProxySea.git
 cd ProxySea
 pip install -r requirements.txt
 ```
+
+---
+
+## ⚡ Quickstart
+
+Want to get up and running in under a minute? Here’s the fastest way to start using ProxySea.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/0N3R0/ProxySea.git  
+cd ProxySea
+```
+
+### 2. Install Dependencies  
+Requires Python 3.10+
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run a Built-in Example  
+Test your setup by running an included example:
+
+```bash
+python examples/fetch_and_test_proxies_from_public_providers.py
+```
+
+You’ll see:
+- Proxies being fetched asynchronously from public providers.
+- Each proxy being tested for availability.
+- A summary of working proxies printed to the console.
+
+
+### 4. (Optional) Try Custom Proxy List  
+Want to test your own proxies? Use:
+
+```bash
+python examples/test_custom_proxies_with_schemes.py
+```
+
+Modify the `proxies` list in that script to include your own:
+
+```python
+proxies: list[str] = ["http://your-proxy:8080", "socks5://other-proxy:1080"]
+```
+
+✅ Done! You now have a working environment ready for testing proxies.
 
 ---
 
