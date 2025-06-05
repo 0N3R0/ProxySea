@@ -188,7 +188,7 @@ for proxy in tested_proxies:
     # - Proxy anonymity level
 ```
 
-### Other Example Scripts
+### 📂 Other Example Scripts
 
 - **Fetch and Test Proxies from Public Providers**
   - **File:** `examples/fetch_and_test_proxies_from_public_providers.py`
@@ -216,7 +216,7 @@ for proxy in tested_proxies:
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 ```
 ProxySea/               # Root of the ProxySea project
 ├── ProxySea/           # Main package folder
