@@ -8,17 +8,17 @@
 
 ## 📜 Table of Contents
 
-1. [Disclaimer](#disclaimer)
-2. [Features](#features)
-3. [Future Roadmap](#future-roadmap)
-4. [Requirements](#requirements)
-5. [Installation](#installation)
-6. [Quick Start](#quick-start)
-7. [Usage Example](#usage-example)
-8. [Other Example Scripts](#other-example-scripts)
-9. [Project Structure](#project-structure)
-10. [Contributing](#contributing)
-11. [License](#license)
+1. [Disclaimer](#Disclaimer)
+2. [Features](#Features)
+3. [Future Roadmap](#Future-Roadmap)
+4. [Requirements](#Requirements)
+5. [Installation](#Installation)
+6. [Quick Start](#Quickstart)
+7. [Usage Example](#Usage-Example)
+8. [Other Example Scripts](#Other-Example-Scripts)
+9. [Project Structure](#Project-Structure)
+10. [Contributing](#Contributing)
+11. [License](#License)
 
 ---
 
@@ -43,7 +43,7 @@
 
 ---
 
-## 🛠 Future Roadmap
+## 🛠 Future-Roadmap
 
 - **Geolocation Metadata**: Augment each `ProxyInfo` with geolocation details (country, region, city) based on IP lookup.
 - **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services (e.g., `ipinfo.io`) to verify IP and latency.  
@@ -60,6 +60,7 @@
   - `beautifulsoup4`
   - `lxml`
   - `py-mini-racer`
+  - `poetry` (for pyproject.toml)
   - `pytest` (for tests)
   - `asyncio` (standard library)
 
