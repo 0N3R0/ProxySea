@@ -25,8 +25,8 @@
 
 ## ⚠️ Disclaimer
 
-> **Intended for educational and research purposes only.**  
-> **No warranty** — The creator of ProxySea does **not take any responsibility** for how this software is used. You must ensure that your usage complies with all applicable laws and regulations in your jurisdiction.  
+> **Intended for educational and research purposes only.**
+> **No warranty** — The creator of ProxySea does **not take any responsibility** for how this software is used. You must ensure that your usage complies with all applicable laws and regulations in your jurisdiction.
 > Whether you are scraping proxy data from public sources, testing network behavior, or sending requests via third-party proxies — **you use this software at your own risk**. Any misuse, abuse, or illegal activity carried out using ProxySea is solely the responsibility of the user.
 
 ---
@@ -48,16 +48,16 @@
 ## 🛠 Future-Roadmap
 
 - **Geolocation Metadata**: Augment each `ProxyInfo` with geolocation details (country, region, city) based on IP lookup.
-- **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services to verify IP and latency.  
+- **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services to verify IP and latency.
 - **More proxy providers**: Add more proxy providers for fetching more proxies.
-- **API Server**: Create and expose a REST API for real-time proxy access and management.  
+- **API Server**: Create and expose a REST API for real-time proxy access and management.
 
 ---
 
 ## 🚧 Requirements
 
-- **Python**: 3.10 or higher  
-- **Libraries** (installed via `requirements.txt`):  
+- **Python**: 3.10 or higher
+- **Libraries** (installed via `requirements.txt`):
   - `httpx`
   - `requests`
   - `beautifulsoup4`
@@ -76,7 +76,7 @@
 
 Clone the repository and install dependencies:
 
-> **Requires Python 3.10+**
+> **Requires Python 3.10 or higher**
 
 ```bash
 git clone https://github.com/0N3R0/ProxySea.git
@@ -98,7 +98,7 @@ cd ProxySea
 ```
 
 ### 2. Install Dependencies  
-Requires Python 3.10+
+> **Requires Python 3.10 or higher**
 
 ```bash
 pip install -r requirements.txt
