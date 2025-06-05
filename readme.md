@@ -8,13 +8,15 @@
 
 ## 📜 Table of Contents
 
-1. [Disclaimer](#disclaimer)  
-2. [Features](#features)  
-3. [Installation](#installation)  
-4. [Usage Example](#usage-example)  
-5. [Project Structure](#project-structure)  
-6. [Contributing](#contributing)  
-7. [License](#license)  
+1. [Disclaimer](#disclaimer)
+2. [Features](#features)
+3. [🛠 Future Roadmap](#future-roadmap)
+4. [Installation](#installation)
+5. [Usage Example](#usage-example)
+6. [Other Example Scripts](#other-example-scripts)
+7. [Project Structure](#project-structure)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ---
 
@@ -36,6 +38,14 @@
 | ✅ | **Custom Proxy Testing**: Quickly test your own proxy list, with or without explicit schemes.        |
 | ✅ | **Built-in Logging**: Detailed debug logs help you trace and troubleshoot proxy operations.          |
 | ✅ | **Unit Tests Included**: Partial coverage of unit tests to ensure reliability.                       |
+
+---
+
+## 🛠 Future Roadmap
+
+- **Geolocation Metadata**: Augment each `ProxyInfo` with geolocation details (country, region, city) based on IP lookup.
+- **Enhanced Health Checks**: Improve proxy validation by sending test requests to third-party services (e.g., `ipinfo.io`) to verify IP and latency.  
+- **API Server**: Create and expose a REST API for real-time proxy access and management.  
 
 ---
 
@@ -166,8 +176,8 @@ ProxySea/               # Root of the ProxySea project
 
 Contributions are very welcome! To contribute:
 
-1. **Fork** the repository.  
-2. **Create a new branch:**  
+1. **Fork** the repository.
+2. **Create a new branch:**
    git checkout -b feature/your-feature-name
 3. Make your changes and **add unit tests** if applicable.
 4. **Commit** your changes and **push** the branch:
