@@ -19,6 +19,7 @@
 9. [Project Structure](#-project-structure)
 10. [Contributing](#-contributing)
 11. [License](#-license)
+12. [Author](#-author)
 
 ---
 
@@ -262,3 +263,9 @@ Contributions are very welcome! To contribute:
 ## 📄 License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## ✍️ Author
+
+© 2025 0N3R0

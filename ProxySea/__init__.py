@@ -1,3 +1,10 @@
+# ProxySea – Async-first, ultra-fast Python library for scraping,
+# detecting, and testing public HTTP/HTTPS/SOCKS4/SOCKS5 proxies
+# with modular OOP design and built-in logging.
+# Copyright (c) 2025 0N3R0
+# Licensed under the MIT License (see LICENSE file for details)
+
+
 from .imports import time
 
 from .providers import ProvidersManager, ProvidersProxyTester
