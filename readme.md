@@ -102,7 +102,7 @@ Clone the repository and instsall dependencies:
 
 
 ## Project Structure
-
+```
 ProxySea/               # Root of the ProxySea project
 ├── ProxySea/           # Main package folder
 │   ├── api/            # API implementation (future)
@@ -112,4 +112,4 @@ ProxySea/               # Root of the ProxySea project
 │   └── util/           # Utility classes and functions
 ├── examples/           # Example usage scripts
 └── tests/              # Unit tests and pytest
-
+```
