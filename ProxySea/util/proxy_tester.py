@@ -688,7 +688,7 @@ class ProxySchemeDetector:
         ```
         """
 
-        aio = AIOBase(_semaphore = 2)
+        aio = AIOBase(_semaphore = 4)
 
         # Add https proxy detect method
         aio.add_task(self.is_https, _host, _port, 1.9)
