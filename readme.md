@@ -250,11 +250,12 @@ Contributions are very welcome! To contribute:
 1. **Fork** the repository.
 2. **Create a new branch:**
    git checkout -b feature/your-feature-name
-3. Make your changes and **add unit tests** if applicable.
-4. **Commit** your changes and **push** the branch:
+4. Make your changes and **add unit tests** if applicable.
+5. **Commit** your changes:
    git commit -m "Add new feature"
+6. **Push** your branch:
    git push origin feature/your-feature-name
-5. **Open a Pull Request**, describing your changes in detail.
+7. **Open a Pull Request**, describing your changes in detail.
 
 > Please adhere to consistent code style, include documentation for new functionality, and ensure all existing tests pass.
 
