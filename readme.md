@@ -39,7 +39,7 @@ Clone the repository and instsall dependencies:
 
 ## One of the examples from `./examples` directory.
 
-`[test_custom_proxies_with_schemes.py](./examples/test_custom_proxies_with_schemes.py)`
+*[test_custom_proxies_with_schemes.py](./examples/test_custom_proxies_with_schemes.py)*
 ```python
     import asyncio, typing
     from ProxySea import ProxySea
