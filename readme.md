@@ -19,7 +19,7 @@
 9. [Project Structure](#-project-structure)
 10. [Contributing](#-contributing)
 11. [License](#-license)
-12. [Author](#-author)
+12. [Author](#-%EF%B8%8F-author)
 
 ---
 
