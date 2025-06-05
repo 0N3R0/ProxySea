@@ -41,6 +41,6 @@ class Logger:
         if not self.debug:
             return
 
-        now: datetime.datetime = datetime.datetime.now()
+        now: datetime.datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        print(f"({CLR.YELLOW}{now.date()} {now.hour}:{now.minute}:{now.second}{CLR.RESET}) {CLR.GREEN}{self.logger_name}{CLR.RESET} {CLR.NORMAL}{message}{CLR.RESET}")
+        print(f"({CLR.YELLOW}{now}{CLR.RESET}) {CLR.GREEN}{self.logger_name}{CLR.RESET} {CLR.NORMAL}{message}{CLR.RESET}")

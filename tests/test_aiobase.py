@@ -41,3 +41,13 @@ class TestAIOBase:
         results = await self.aio.run_tasks()
 
         assert [6, 15] == results
+
+    @pytest.mark.asyncio
+    async def test_aiobase_with_failing_task(self):
+        async def failing_task():
+            raise RuntimeError("oops")
+
+        self.aio.add_task(failing_task)
+
+        with pytest.raises(RuntimeError):
+            await self.aio.run_tasks()

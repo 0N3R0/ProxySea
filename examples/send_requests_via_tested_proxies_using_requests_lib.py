@@ -32,7 +32,7 @@ for proxy in http_proxies:
         "https": f"{requests_proxy.host}:{requests_proxy.port}"
     }
 
-    print(f"Sending requests via |{requests_proxy}| proxy.")
+    print(f"Sending request via |{requests_proxy}| proxy.")
 
     # Set the base URL for requesting the resource
     BASE_URL: str = "https://ipinfo.io/json"

@@ -2,7 +2,7 @@ import asyncio, requests
 from ProxySea import ProxySea
 from ProxySea.util import ProxyInfo
 
-PS: ProxySea = ProxySea(_debug = False)
+PS: ProxySea = ProxySea(_debug = True)
 
 # Fetch proxies for testing
 fetched_proxies: list[ProxyInfo] = asyncio.run(PS.fetch_proxies())
@@ -23,6 +23,7 @@ if len(http_proxies) <= 0:
 
 print(f"Found {len(http_proxies)} HTTP and ACTIVE proxies.")
 
+# Iterate for each active http proxy
 for proxy in http_proxies:
     # Get the first proxy from the list
     requests_proxy = proxy
@@ -32,7 +33,7 @@ for proxy in http_proxies:
         "https": f"{requests_proxy.host}:{requests_proxy.port}"
     }
 
-    print(f"Sending requests via |{requests_proxy}| proxy.")
+    print(f"Sending request via |{requests_proxy}| proxy.")
 
     # Set the base URL for requesting the resource
     BASE_URL: str = "https://ipinfo.io/json"
@@ -44,7 +45,6 @@ for proxy in http_proxies:
         res = requests.get(url = BASE_URL, proxies = requests_proxies, timeout = 5, verify = False)
     except Exception as e:
         pass
-        # print(f"Got error {e}")
 
     if res:
         # Show the response
