@@ -8,17 +8,17 @@
 
 ## 📜 Table of Contents
 
-1. [Disclaimer](#disclaimer)
-2. [Features](#features)
-3. [Future Roadmap](#future-roadmap)
-4. [Requirements](#requirements)
-5. [Installation](#installation)
-6. [Quick Start](#quickstart)
-7. [Usage Example](#usage-example)
-8. [Other Example Scripts](#other-example-scripts)
-9. [Project Structure](#project-structure)
-10. [Contributing](#contributing)
-11. [License](#license)
+1. [Disclaimer](#-disclaimer)
+2. [Features](#-features)
+3. [Future Roadmap](#-future-roadmap)
+4. [Requirements](#-requirements)
+5. [Installation](#-installation)
+6. [Quick Start](#-quickstart)
+7. [Usage Example](#-usage-example)
+8. [Other Example Scripts](#-other-example-scripts)
+9. [Project Structure](#-project-structure)
+10. [Contributing](#-contributing)
+11. [License](#-license)
 
 ---
 
